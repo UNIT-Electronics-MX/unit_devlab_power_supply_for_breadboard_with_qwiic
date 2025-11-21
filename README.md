@@ -1,5 +1,5 @@
 
-# DevLab: [Protocol/Interface] [Chip/Model] [Brief Description][Module/Sensor/Shield/Adapter]
+# DevLab: Power Supply for Breadboard with QWIIC
 <!-- Exception:
 
 The PULSAR development board line does not use the DevLab: prefix.
