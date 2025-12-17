@@ -1,29 +1,25 @@
-> **Note of Development:**  
-> This hardware module is under active development. File and directory structures, naming conventions, and documentation formats may change as the design evolves.  
-> 
-> - **File Naming:**  
->   - Use capital letters and underscores only.  
->   - Start filenames with `unit_<filename>_v_<version>_<description>.<ext>`.  
->   - Example: `unit_icp10111_barometric_pressure_sensor_v_1_0_0.png`
->   - Schematic: `schematic_v_<version>_<description>.<ext>` (e.g., `schematic_v_1_0_0_icp10111_barometric_pressure_sensor.png`)
->   - Topology: `unit_topology_v_<version>_<description>.<ext>`
->   - Dimensions: `unit_dimension_v_<version>_<description>.<ext>`
-> 
-> - **README Structure:**  
->   - Hardware overview  
->   - Pinout and connector layout  
->   - Dimensions and topology  
->   - Functional description  
->   - Applications  
->   - References  
-> 
-> Please refer to the latest commit history for updates and changes.
-
 # Hardware
 
 <div align="center">
-<a href="{{schematic_url}}"><img src="resources/Schematics_icon.jpg?raw=false" width="200px"><br/>Schematic</a>
+<a href="./unit_schematic_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.pdf"><img src="resources/Schematics_icon.jpg?raw=false" width="200px"><br/>Schematic</a>
 </div>
+
+## Key Technical Specifications
+
+<div align="center">
+
+| **Parameter** |           **Description**            | **Min** | **Typ** | **Max** | **Unit** |
+|:-------------:|:------------------------------------:|:-------:|:-------:|:-------:|:--------:|
+|      Vin      | Input voltage to power on the module |    5    |    -    |   20    |    V     |
+|      Vih      |   High-level input voltage for I2C   |   1.4   |    -    |   5.5   |    V     |
+|      Vil      |   Low-level input voltage for I2C    |    -    |    -    |   0.4   |    V     |
+|      Icc      |            Supply Current            |    -    |   3.1   |    -    |    mA    |
+|     I3v3      |   3V3 Power Supply Output Current    |    -    |    -    |    2    |    A     |
+ 
+
+</div>
+
+* **Note:** Output voltages and currents may vary with the characteristics of the power supply
 
 ## Pinout
 
@@ -44,26 +40,30 @@
 ## Dimensions
 
 <div align="center">
-<a href="./resources/unit_dimension_v_1_0_0_icp10111_barometric_pressure_sensor.png"><img src="./resources/unit_dimension_v_1_0_0_icp10111_barometric_pressure_sensor.png" width="500px"><br/> Dimensions</a>
+<a href="./resources/unit_dimension_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png"><img src="./resources/unit_dimension_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png" width="500px"><br/> Dimensions</a>
 </div>
 
 ## Topology
 
 <div align="center">
-
-<div align="center">
-<a href="./resources/unit_topology_V_0_0_1_ue0099_Sensor_Touch.png"><img src="./resources/unit_topology_V_0_0_1_ue0099_Sensor_Touch.png" width="500px"><br/> Topology</a>
+<a href="./resources/unit_topology_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png"><img src="./resources/unit_topology_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png" width="500px"><br/> Topology</a>
 <br/>
 <br/>
 <br/>
 
-| Ref. | Description                              |
-|------|------------------------------------------|
-| IC1  | {{sensor_description}}                   |
-| L1   | Power On LED                             |
-| U1   | {{regulator_description}}                | 
-| JP1  | 2.54 mm Castellated Holes                |
-| J1   | QWIIC Connector (JST 1 mm pitch) for I2C |
+| Ref.    | Description                                        |
+|---------|----------------------------------------------------|
+| J1      | USB Type-C Connector                               |
+| L1      | Power On LED                                       |
+| IC1     | HUSB238                                            |
+| SW1     | Dip Switch for voltage selector                    |
+| U1      | TPS54302 3.3V Regulator                            |
+| J6      | Screw Terminal Block output for VUSB               |
+| JP7     | Pin Header for 3V3 power supply                    |
+| JP3     | Output voltage selector for the left side headers  |
+| JP4     | Output voltage selector for the right side headers |
+| JP1-JP2 | Left side output voltage headers for breadboard    |
+| JP5-JP6 | Right side output voltage headers for breadboard   |
 
 </div>
 
@@ -77,14 +77,7 @@
 
 > **Note:** The module also includes a Qwiic/STEMMA QT connector carrying the same four signals (VCC, GND, SDA, SCL) for effortless daisy-chaining.
 
-## Functional Description
-
-{{functional_description}}
-
-## Applications
-
-{{applications_list}}
-
 # References
 
-- [{{datasheet_name}}]({{datasheet_url}})
+- <a href="./resources/unit_datasheet_v_1_0_0_ue0113_husb238.pdf">HUSB238 Datasheet </a>
+- <a href="./resources/unit_datasheet_v_1_0_0_ue0113_tps54302.pdf">TPS54302 Datasheet </a>

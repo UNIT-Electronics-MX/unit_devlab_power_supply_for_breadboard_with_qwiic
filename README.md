@@ -17,8 +17,8 @@ Example: JUN R3 -->
 This is a modular development board based on a popular microcontroller, designed for rapid prototyping and educational use. It features flexible power options, modern connectivity, and user-friendly interfaces. An integrated LED matrix allows for simple visual feedback and display.
 
 <div align="center">
-  <img src="hardware/resources/unit_top_v_1_0_0_icp10111_barometric_pressure_sensor.png" width="450px" alt="Development Board">
-  <p><em>Development Board</em></p>
+  <img src="./hardware/resources/unit_top_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png" width="450px" alt="Power Supply for Breadboard with QWIIC">
+  <p><em>Power Supply for Breadboard with QWIIC</em></p>
 </div>
 
 <div align="center">
@@ -36,19 +36,17 @@ This is a modular development board based on a popular microcontroller, designed
 
 ## Overview
 
-| Feature           | Description                                         |
-|-------------------|-----------------------------------------------------|
-| Microcontroller   | 8-bit MCU                                           |
-| Memory            | Flash, SRAM, EEPROM                                 |
-| Clock Speed       | 16 MHz                                              |
-| Power Supply      | USB-C (5V)                                          |
-| Interfaces        | UART, I2C, SPI, PWM, ADC, GPIO                      |
-| LED Matrix        | 5x5 RGB LED Matrix                                  |
-| Connectivity      | USB-C for programming and power                     |
-| Form Factor       | UNO-compatible                                      |
-| Development IDEs  | Arduino IDE, PlatformIO                             |
-| Onboard Features  | Integrated LED matrix, programmable LED, reset button|
-| Expansion Port    | I2C connector for sensors and modules               |
+| Feature                | Description                                                      |
+|------------------------|------------------------------------------------------------------|
+| USB PD IC              | HUSB238                                                          |
+| Compatible voltages    | 3.3V, 5V, 9V, 12V, 15V, 18V, 20V                                 |
+| Maximum output current | 5A                                                               |
+| Power Supply           | USB-C                                                            |
+| Interfaces             | I2C, PD3.0m type-C V1.4, Apple Divider 3, BC1.2 SDP, CDP and DCP |
+| Form Factor            | Designed for breadboards                                         |
+| Expansion Port         | I2C connector for sensors and modules                            |
+
+* **Note:** Output voltages and currents may vary with the characteristics of the power supply  
 
 </div>
 
