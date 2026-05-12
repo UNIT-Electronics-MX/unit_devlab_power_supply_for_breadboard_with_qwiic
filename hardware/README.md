@@ -8,13 +8,31 @@
 
 <div align="center">
 
-| **Parameter** |           **Description**            | **Min** | **Typ** | **Max** | **Unit** |
-|:-------------:|:------------------------------------:|:-------:|:-------:|:-------:|:--------:|
-|      Vin      | Input voltage to power on the module |    5    |    -    |   20    |    V     |
-|      Vih      |   High-level input voltage for I2C   |   1.4   |    -    |   5.5   |    V     |
-|      Vil      |   Low-level input voltage for I2C    |    -    |    -    |   0.4   |    V     |
-|      Icc      |            Supply Current            |    -    |   3.1   |    -    |    mA    |
-|     I3v3      |   3V3 Power Supply Output Current    |    -    |    -    |    2    |    A     |
+| **Parameter** | **Description** | **Min** | **Typ** | **Max** | **Unit** |
+|:---:|:---|:---:|:---:|:---:|:---:|
+| Vin | USB Type-C PD input voltage | 5 | - | 20 | V |
+| VBUS | USB PD negotiated output voltage | 5 | 9 / 12 / 15 | 20 | V |
+| V3V3 | Regulated 3.3V output rail | 3.2 | 3.3 | 3.4 | V |
+| I3V3 | Maximum 3.3V regulator output current | - | - | 2 | A |
+| IBUS | Maximum breadboard output current | - | - | 5 | A |
+| VIH | High-level input voltage for I²C | 0.7 × VCC | - | 5.5 | V |
+| VIL | Low-level input voltage for I²C | - | - | 0.3 × VCC | V |
+| ICC | Typical module supply current | - | 3.1 | - | mA |
+| fI2C | Supported I²C communication frequency | 0 | 100 | 400 | kHz |
+| TOPD | USB Power Delivery supported profiles | 5 | 9 / 12 / 15 | 20 | V |
+| TAMB | Recommended operating ambient temperature | -20 | 25 | 85 | °C |
+
+</div>
+
+> **Note 1:** USB Power Delivery voltage selection can be configured through the onboard DIP switch resistor network or dynamically through the HUSB238 I²C interface. I²C configuration has priority over DIP switch settings.
+
+> **Note 2:** The 3.3V regulator output capability depends on thermal dissipation, PCB airflow, and input voltage conditions.
+
+> **Note 3:** Qwiic/STEMMA QT connectors share the same I²C bus signals (3V3, GND, SDA, SCL) for daisy-chain operation.
+
+> **Note 4:** The maximum VBUS/PD output current depends on the power capability, voltage profile, cable quality, and electrical characteristics of the connected USB Type-C PD power adapter.
+
+> **Note 5:** The module integrates breadboard-compatible power rails with selectable VUSB and regulated 3.3V outputs.
  
 
 </div>
@@ -24,7 +42,7 @@
 ## Pinout
 
 <div align="center">
-    <a href="#"><img src="resources/unit_pinout_v_0_0_1_ue0094_icp10111_barometric_pressure_sensor_en.jpg" width="500px"><br/>Pinout</a>
+    <a href="#"><img src="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.png" width="500px"><br/>Pinout</a>
     <br/>
     <br/>
     <br/>
