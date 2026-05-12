@@ -43,7 +43,7 @@
 
 <div align="center">
 <a href="./unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.pdf">
-<img src="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.jpg" width="800px" height="800px"><br/>
+<img src="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.jpg" width="1000px" height="1500px"><br/>
 Pinout
 </a>
 </div>
