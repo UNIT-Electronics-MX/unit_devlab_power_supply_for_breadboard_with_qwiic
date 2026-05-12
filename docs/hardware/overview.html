@@ -181,20 +181,42 @@
 </div>
 <h2 id="key-technical-specifications"><a class="header" href="#key-technical-specifications">Key Technical Specifications</a></h2>
 <div align="center">
-<div class="table-wrapper"><table><thead><tr><th style="text-align: center"><strong>Parameter</strong></th><th style="text-align: center"><strong>Description</strong></th><th style="text-align: center"><strong>Min</strong></th><th style="text-align: center"><strong>Typ</strong></th><th style="text-align: center"><strong>Max</strong></th><th style="text-align: center"><strong>Unit</strong></th></tr></thead><tbody>
-<tr><td style="text-align: center">Vin</td><td style="text-align: center">Input voltage to power on the module</td><td style="text-align: center">5</td><td style="text-align: center">-</td><td style="text-align: center">20</td><td style="text-align: center">V</td></tr>
-<tr><td style="text-align: center">Vih</td><td style="text-align: center">High-level input voltage for I2C</td><td style="text-align: center">1.4</td><td style="text-align: center">-</td><td style="text-align: center">5.5</td><td style="text-align: center">V</td></tr>
-<tr><td style="text-align: center">Vil</td><td style="text-align: center">Low-level input voltage for I2C</td><td style="text-align: center">-</td><td style="text-align: center">-</td><td style="text-align: center">0.4</td><td style="text-align: center">V</td></tr>
-<tr><td style="text-align: center">Icc</td><td style="text-align: center">Supply Current</td><td style="text-align: center">-</td><td style="text-align: center">3.1</td><td style="text-align: center">-</td><td style="text-align: center">mA</td></tr>
-<tr><td style="text-align: center">I3v3</td><td style="text-align: center">3V3 Power Supply Output Current</td><td style="text-align: center">-</td><td style="text-align: center">-</td><td style="text-align: center">2</td><td style="text-align: center">A</td></tr>
+<div class="table-wrapper"><table><thead><tr><th style="text-align: center"><strong>Parameter</strong></th><th style="text-align: left"><strong>Description</strong></th><th style="text-align: center"><strong>Min</strong></th><th style="text-align: center"><strong>Typ</strong></th><th style="text-align: center"><strong>Max</strong></th><th style="text-align: center"><strong>Unit</strong></th></tr></thead><tbody>
+<tr><td style="text-align: center">Vin</td><td style="text-align: left">USB Type-C PD input voltage</td><td style="text-align: center">5</td><td style="text-align: center">-</td><td style="text-align: center">20</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">VBUS</td><td style="text-align: left">USB PD negotiated output voltage</td><td style="text-align: center">5</td><td style="text-align: center">9 / 12 / 15</td><td style="text-align: center">20</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">V3V3</td><td style="text-align: left">Regulated 3.3V output rail</td><td style="text-align: center">3.2</td><td style="text-align: center">3.3</td><td style="text-align: center">3.4</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">I3V3</td><td style="text-align: left">Maximum 3.3V regulator output current</td><td style="text-align: center">-</td><td style="text-align: center">-</td><td style="text-align: center">2</td><td style="text-align: center">A</td></tr>
+<tr><td style="text-align: center">IBUS</td><td style="text-align: left">Maximum breadboard output current</td><td style="text-align: center">-</td><td style="text-align: center">-</td><td style="text-align: center">5</td><td style="text-align: center">A</td></tr>
+<tr><td style="text-align: center">VIH</td><td style="text-align: left">High-level input voltage for I²C</td><td style="text-align: center">0.7 × VCC</td><td style="text-align: center">-</td><td style="text-align: center">5.5</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">VIL</td><td style="text-align: left">Low-level input voltage for I²C</td><td style="text-align: center">-</td><td style="text-align: center">-</td><td style="text-align: center">0.3 × VCC</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">ICC</td><td style="text-align: left">Typical module supply current</td><td style="text-align: center">-</td><td style="text-align: center">3.1</td><td style="text-align: center">-</td><td style="text-align: center">mA</td></tr>
+<tr><td style="text-align: center">fI2C</td><td style="text-align: left">Supported I²C communication frequency</td><td style="text-align: center">0</td><td style="text-align: center">100</td><td style="text-align: center">400</td><td style="text-align: center">kHz</td></tr>
+<tr><td style="text-align: center">TOPD</td><td style="text-align: left">USB Power Delivery supported profiles</td><td style="text-align: center">5</td><td style="text-align: center">9 / 12 / 15</td><td style="text-align: center">20</td><td style="text-align: center">V</td></tr>
+<tr><td style="text-align: center">TAMB</td><td style="text-align: left">Recommended operating ambient temperature</td><td style="text-align: center">-20</td><td style="text-align: center">25</td><td style="text-align: center">85</td><td style="text-align: center">°C</td></tr>
 </tbody></table>
 </div></div>
+<blockquote>
+<p><strong>Note 1:</strong> USB Power Delivery voltage selection can be configured through the onboard DIP switch resistor network or dynamically through the HUSB238 I²C interface. I²C configuration has priority over DIP switch settings.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note 2:</strong> The 3.3V regulator output capability depends on thermal dissipation, PCB airflow, and input voltage conditions.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note 3:</strong> Qwiic/STEMMA QT connectors share the same I²C bus signals (3V3, GND, SDA, SCL) for daisy-chain operation.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note 4:</strong> The maximum VBUS/PD output current depends on the power capability, voltage profile, cable quality, and electrical characteristics of the connected USB Type-C PD power adapter.</p>
+</blockquote>
+<blockquote>
+<p><strong>Note 5:</strong> The module integrates breadboard-compatible power rails with selectable VUSB and regulated 3.3V outputs.</p>
+</blockquote>
+</div>
 <ul>
 <li><strong>Note:</strong> Output voltages and currents may vary with the characteristics of the power supply</li>
 </ul>
 <h2 id="pinout"><a class="header" href="#pinout">Pinout</a></h2>
 <div align="center">
-    <div align="center"><a href="#"><img src="../resources/unit_pinout_v_0_0_1_ue0094_icp10111_barometric_pressure_sensor_en.jpg" style="max-width: 500px; height: auto;" alt="Pinout"><br/> Pinout</a></div>
+    <div align="center"><a href="#"><img src="../resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.png" style="max-width: 500px; height: auto;" alt="Pinout"><br/> Pinout</a></div>
     <br/>
     <br/>
     <br/>
@@ -312,7 +334,7 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Repository Link
             const repoLink = document.createElement("a");
-            repoLink.href = "https://github.com/UNIT-Electronics-MX/devLab_power_supply_for_breadboard_with_qwiic";
+            repoLink.href = "https://github.com/UNIT-Electronics-MX/unit_devlab_power_supply_for_breadboard_with_qwiic";
             repoLink.target = "_blank";
             repoLink.innerHTML = "📋";
             repoLink.title = "Repository";
