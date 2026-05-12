@@ -42,10 +42,11 @@
 ## Pinout
 
 <div align="center">
-    <a href="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.png"><img src="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.jpg" width="800px"><br/>Pinout</a>
-    <br/>
-    <br/>
-    <br/>
+<a href="./unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.pdf">
+<img src="./resources/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.jpg" width="1000px"><br/>
+Pinout
+</a>
+</div>
     
 ## Pin & Connector Layout
 
