@@ -14,7 +14,7 @@ Example: JUN R3 -->
 
 ## Introduction
 
-This is a modular development board based on a popular microcontroller, designed for rapid prototyping and educational use. It features flexible power options, modern connectivity, and user-friendly interfaces. An integrated LED matrix allows for simple visual feedback and display.
+The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact and versatile module designed to power electronic projects in a practical and safe way. It allows power to be supplied through QWIIC connectors or via USB-C chargers compatible with technologies such as Power Delivery (PD), Quick Charge (QC), or Battery Charging (BC).
 
 <div align="center">
   <img src="./hardware/resources/unit_top_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png" width="450px" alt="Power Supply for Breadboard with QWIIC">
@@ -46,16 +46,25 @@ This is a modular development board based on a popular microcontroller, designed
 | Form Factor            | Designed for breadboards                                         |
 | Expansion Port         | I2C connector for sensors and modules                            |
 
-* **Note:** Output voltages and currents may vary with the characteristics of the power supply  
-
 </div>
+
+* **Note:** Output voltages and currents may vary with the characteristics of the power supply  
 
 ## Applications
 
-- **Prototyping:** Quickly develop and test ideas.
-- **Education:** Suitable for learning microcontroller basics.
-- **Wearables:** Compact and versatile for wearable devices.
-- **Displays:** Use the LED matrix for simple visual output.
+- **Electrical consumption testing:** helps power prototypes while evaluating circuit behavior under different voltages or load conditions.
+
+- **Breadboard prototype power supply:** allows test circuits to be powered in an organized way, using selectable voltage outputs and a regulated 3.3 V output.
+
+- **Microcontroller testing:** useful for powering boards such as ESP32, Arduino, Raspberry Pi Pico, STM32, or other embedded systems that require stable power.
+
+- **I2C sensor projects:** thanks to the QWIIC/STEMMA QT connectors, it makes it easier to connect compatible sensors without complex wiring.
+
+- **USB-C PD powered projects:** allows modern USB-C chargers to be used to obtain different voltage profiles, such as 5 V, 9 V, 12 V, 15 V, or 20 V, depending on the configuration and the charger used.
+
+- **Embedded systems development:** can be integrated during the development stage to power control circuits, sensors, and peripherals before designing a final power supply on a PCB.
+
+- **Low- and medium-power actuator testing:** powers small motors, servos, relays, or actuators, always respecting the module’s current and voltage limits.
 
 ## Resources
 
