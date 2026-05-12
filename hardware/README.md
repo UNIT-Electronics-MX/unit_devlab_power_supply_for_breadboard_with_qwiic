@@ -24,6 +24,8 @@
 
 </div>
 
+<br/>
+
 > **Note 1:** USB Power Delivery voltage selection can be configured through the onboard DIP switch resistor network or dynamically through the HUSB238 I²C interface. I²C configuration has priority over DIP switch settings.
 
 > **Note 2:** The 3.3V regulator output capability depends on thermal dissipation, PCB airflow, and input voltage conditions.
