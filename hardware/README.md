@@ -1,7 +1,7 @@
 # Hardware
 
 <div align="center">
-<a href="./unit_schematic_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.pdf"><img src="resources/Schematics_icon.jpg?raw=false" width="200px"><br/>Schematic</a>
+<a href="./unit_sch_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.pdf"><img src="resources/Schematics_icon.jpg?raw=false" width="200px"><br/>Schematic</a>
 </div>
 
 ## Key Technical Specifications

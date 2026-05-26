@@ -1,18 +1,5 @@
 
 # DevLab: Power Supply for Breadboard with QWIIC
-<!-- Exception:
-
-The PULSAR development board line does not use the DevLab: prefix.
-
-Format: PULSAR [MCU/Model]
-
-Examples: PULSAR C6, PULSAR H2, PULSAR RP2350
-
-The JUN R3 board also does not use DevLab:
-
-Example: JUN R3 -->
-
-## Introduction
 
 The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact and versatile module designed to power electronic projects in a practical and safe way. It allows power to be supplied through QWIIC connectors or via USB-C chargers compatible with technologies such as Power Delivery (PD), Quick Charge (QC), or Battery Charging (BC).
 
@@ -25,7 +12,7 @@ The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact an
 
 ### Quick Setup
 
-[<img src="https://img.shields.io/badge/Product%20Wiki-blue?style=for-the-badge" alt="Product Wiki">](#)
+[<img src="https://img.shields.io/badge/Product%20Wiki-blue?style=for-the-badge" alt="Product Wiki">](https://wiki.uelectronics.com/wiki/unit_devlab_power_supply_for_breadboard_with_qwiic)
 [<img src="https://img.shields.io/badge/Datasheet-green?style=for-the-badge" alt="Datasheet">](#)
 [<img src="https://img.shields.io/badge/Buy%20Now-orange?style=for-the-badge" alt="Buy Now">](#)
 [<img src="https://img.shields.io/badge/Getting%20Started-purple?style=for-the-badge" alt="Getting Started">](#)
