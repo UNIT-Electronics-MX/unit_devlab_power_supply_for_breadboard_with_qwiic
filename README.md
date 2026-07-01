@@ -55,9 +55,9 @@ The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact an
 
 ## Resources
 
-- [Schematic Diagram](#)
-- [Pinout Diagram](#)
-- [Getting Started Guide](#)
+- [Schematic Diagram](./hardware/unit_sch_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.pdf)
+- [Pinout Diagram](./hardware/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.pdf)
+- [Getting Started Guide](./hardware/unit_datasheet_v_1_0_0_ue0113_Power_Supply_for_Breadboard_with_Qwiic.pdf)
 
 ## 📝 License
 
