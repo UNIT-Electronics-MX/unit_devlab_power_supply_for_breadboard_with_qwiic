@@ -1,35 +1,21 @@
-# Software Examples
+# Software examples
 
-This directory contains example code and templates for various software modules. These examples demonstrate how to use the provided APIs, integrate with different components, and implement common functionalities within the software space.
+Each C++ sketch has its own directory whose name matches its main `.ino` file.
+See the [software guide](../README.md) for dependencies, connection details,
+configuration, and usage instructions.
 
-## Contents
-
-- Sample usage of core modules
-- Integration patterns
-- Best practices for module interaction
-
-## Example: Initializing a Module
-
-```python
-from mymodule import Module
-
-mod = Module(config="default")
-mod.initialize()
+```text
+examples/
+└── cpp_examples/
+    └── husb238_detection_only/
+        └── husb238_detection_only.ino
 ```
 
-## Example: Handling Events
+## C++: HUSB238 detection
 
-```python
-def on_event(event):
-    print(f"Event received: {event}")
+The [`husb238_detection_only`](cpp_examples/husb238_detection_only/husb238_detection_only.ino)
+sketch detects the module and prints the USB-C PD voltage profiles offered by
+the attached source.
 
-mod.register_callback(on_event)
-```
-
-## Example: Clean Shutdown
-
-```python
-mod.shutdown()
-```
-
-Refer to individual module documentation for more detailed examples and advanced usage.
+The example defaults to SDA pin `6` and SCL pin `7`. Change
+`HUSB238_I2C_SDA` and `HUSB238_I2C_SCL` when using another controller.

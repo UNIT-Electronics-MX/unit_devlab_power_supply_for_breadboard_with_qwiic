@@ -13,8 +13,8 @@ The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact an
 ### Quick Setup
 
 [<img src="https://img.shields.io/badge/Product%20Wiki-blue?style=for-the-badge" alt="Product Wiki">](https://wiki.uelectronics.com/wiki/unit_devlab_power_supply_for_breadboard_with_qwiic)
-[<img src="https://img.shields.io/badge/Datasheet-green?style=for-the-badge" alt="Datasheet">](#)
-[<img src="https://img.shields.io/badge/Buy%20Now-orange?style=for-the-badge" alt="Buy Now">](#)
+[<img src="https://img.shields.io/badge/Datasheet-green?style=for-the-badge" alt="Datasheet">](https://unit-electronics-mx.github.io/unit_devlab_power_supply_for_breadboard_with_qwiic/hardware/unit_datasheet_v_1_0_0_ue0113_Power_Supply_for_Breadboard_with_Qwiic.pdf)
+[<img src="https://img.shields.io/badge/Buy%20Now-orange?style=for-the-badge" alt="Buy Now">](https://uelectronics.com/producto/husb238-fuente-para-protoboard-con-senuelo-de-carga/)
 [<img src="https://img.shields.io/badge/Getting%20Started-purple?style=for-the-badge" alt="Getting Started">](#)
 
 </div>
@@ -58,6 +58,7 @@ The Breadboard Power Supply with Load Decoy and QWIIC Connectors is a compact an
 - [Schematic Diagram](./hardware/unit_sch_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.pdf)
 - [Pinout Diagram](./hardware/unit_pinout_v_1_0_0_ue00113_Power_Supply_for_Breadboard_with_Qwiic_en.pdf)
 - [Getting Started Guide](./hardware/unit_datasheet_v_1_0_0_ue0113_Power_Supply_for_Breadboard_with_Qwiic.pdf)
+- [Software examples](software/examples/README.md)
 
 ## 📝 License
 
@@ -67,4 +68,3 @@ See [`LICENSE.md`](LICENSE.md) for details.
 <div align="center">
   <sub>Template created by UNIT Electronics</sub>
 </div>
-
