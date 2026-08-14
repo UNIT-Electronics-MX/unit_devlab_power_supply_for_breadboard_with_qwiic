@@ -44,7 +44,8 @@ jobs:
           python tools/cad/build_step_catalog.py \
             --input hardware/mechanics \
             --output "$RUNNER_TEMP/component-assets" \
-            --public-base-url "$MECHANICS_URL"
+            --public-base-url "$MECHANICS_URL" \
+            --require-colors
 
       - name: Publish generated files beside their STEP sources
         run: |
