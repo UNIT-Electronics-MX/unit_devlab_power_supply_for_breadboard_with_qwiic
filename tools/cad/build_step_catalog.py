@@ -19,6 +19,7 @@ from urllib.parse import quote
 
 
 STEP_EXTENSIONS = {".step", ".stp"}
+DEFAULT_COLOUR = (179, 184, 199, 255)
 
 
 def public_url(base_url: str, path: Path) -> str:
@@ -26,8 +27,8 @@ def public_url(base_url: str, path: Path) -> str:
     return f"{base_url.rstrip('/')}/{quote(path.as_posix(), safe='/-_.~')}"
 
 
-def read_step_shapes(source: Path):
-    """Read every free shape in a STEP file, retaining its assembly structure."""
+def read_step_model(source: Path):
+    """Read STEP roots and their leaf assembly instances from an XDE document."""
     from OCP.STEPCAFControl import STEPCAFControl_Reader
     from OCP.TCollection import TCollection_ExtendedString
     from OCP.TDF import TDF_LabelSequence
@@ -47,10 +48,30 @@ def read_step_shapes(source: Path):
     if not labels.Length():
         raise ValueError("The STEP file contains no free shapes")
 
-    shapes = [XCAFDoc_ShapeTool.GetShape_s(labels.Value(index)) for index in range(1, labels.Length() + 1)]
+    roots = [XCAFDoc_ShapeTool.GetShape_s(labels.Value(index)) for index in range(1, labels.Length() + 1)]
+    parts = []
+
+    def collect_leaf_instances(label) -> None:
+        """Keep component-instance shapes; their labels carry the XDE colours."""
+        components = TDF_LabelSequence()
+        if shape_tool.GetComponents(label, components):
+            for index in range(1, components.Length() + 1):
+                collect_leaf_instances(components.Value(index))
+            return
+
+        shape = XCAFDoc_ShapeTool.GetShape_s(label)
+        if not shape.IsNull():
+            parts.append(shape)
+
+    for index in range(1, labels.Length() + 1):
+        collect_leaf_instances(labels.Value(index))
+
+    if not parts:
+        parts = roots
+
     # Keep the document alive while meshes are generated: XDE colours are
     # stored in this document and can differ for every solid instance.
-    return shapes, colour_tool, document
+    return roots, parts, colour_tool, document
 
 
 def make_compound(shapes):
@@ -60,7 +81,7 @@ def make_compound(shapes):
     return cq.Compound.makeCompound([cq.Shape.cast(shape) for shape in shapes])
 
 
-def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angular_tolerance: float) -> None:
+def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angular_tolerance: float) -> set:
     """Tessellate a STEP assembly into a GLB model with STEP/XDE colours."""
     import cadquery as cq
     import trimesh
@@ -70,9 +91,10 @@ def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angul
     from OCP.XCAFDoc import XCAFDoc_ColorType
 
     scene = trimesh.Scene()
+    resolved_colours = set()
 
-    def surface_colour(solid):
-        """Resolve instance overrides before falling back to surface colours."""
+    def surface_colour(shape, fallback=None):
+        """Resolve the XDE colour assigned to an instance or sub-shape."""
         for lookup in (colour_tool.GetInstanceColor, colour_tool.GetColor):
             for colour_type in (
                 XCAFDoc_ColorType.XCAFDoc_ColorSurf,
@@ -83,13 +105,18 @@ def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angul
                 if lookup(solid, colour_type, colour):
                     rgb = colour.Values(Quantity_TOC_RGB)
                     return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
-        return (179, 184, 199, 255)
+        return fallback if fallback is not None else DEFAULT_COLOUR
 
     with tempfile.TemporaryDirectory(prefix="ue-step-glb-") as temporary:
         temporary_path = Path(temporary)
         part_number = 0
-        for shape in shapes:
-            solids = TopExp_Explorer(shape, TopAbs_SOLID)
+        for part in parts:
+            # Colours are commonly assigned to the assembly-component instance,
+            # not to each enclosed solid. Resolve that colour first and pass it
+            # down to the solid so Qwiic headers and other coloured components
+            # retain their original STEP appearance.
+            part_colour = surface_colour(part)
+            solids = TopExp_Explorer(part, TopAbs_SOLID)
             while solids.More():
                 mesh_path = temporary_path / f"part-{part_number}.stl"
                 cq.exporters.export(
@@ -100,8 +127,10 @@ def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angul
                 )
                 mesh = trimesh.load_mesh(mesh_path, force="mesh")
                 if not mesh.is_empty:
+                    colour = surface_colour(solids.Current(), part_colour)
+                    resolved_colours.add(colour)
                     mesh.visual.material = trimesh.visual.material.PBRMaterial(
-                        baseColorFactor=surface_colour(solids.Current()),
+                        baseColorFactor=colour,
                         metallicFactor=0.0,
                         roughnessFactor=0.72,
                     )
@@ -113,6 +142,7 @@ def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angul
         raise ValueError("The STEP file produced no convertible solids")
     target.parent.mkdir(parents=True, exist_ok=True)
     scene.export(target, file_type="glb")
+    return resolved_colours
 
 
 def export_svg(shapes, target: Path) -> None:
@@ -151,6 +181,7 @@ def main() -> int:
     parser.add_argument("--public-base-url", required=True, help="Pages URL for the mechanics directory")
     parser.add_argument("--linear-tolerance", type=float, default=0.05, help="GLB linear tolerance in mm")
     parser.add_argument("--angular-tolerance", type=float, default=0.10, help="GLB angular tolerance in radians")
+    parser.add_argument("--require-colors", action="store_true", help="fail instead of publishing a colourless GLB")
     arguments = parser.parse_args()
 
     source_root = arguments.input.resolve()
@@ -187,9 +218,11 @@ def main() -> int:
             "preview_svg": {"path": svg_path.as_posix(), "url": public_url(arguments.public_base_url, svg_path)},
         }
         try:
-            shapes, colour_tool, _document = read_step_shapes(source)
-            export_glb(shapes, colour_tool, output / glb_path, arguments.linear_tolerance, arguments.angular_tolerance)
-            export_svg(shapes, output / svg_path)
+            roots, parts, colour_tool, _document = read_step_model(source)
+            colours = export_glb(parts, colour_tool, output / glb_path, arguments.linear_tolerance, arguments.angular_tolerance)
+            if arguments.require_colors and colours == {DEFAULT_COLOUR}:
+                raise ValueError("STEP colours were not resolved; refusing to publish a monochrome GLB")
+            export_svg(roots, output / svg_path)
             print(f"Generated GLB and SVG: {relative_source}")
         except Exception as error:
             failures += 1
