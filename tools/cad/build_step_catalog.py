@@ -41,12 +41,16 @@ def read_step_shapes(source: Path):
         raise ValueError("OpenCascade could not read the STEP file")
 
     shape_tool = XCAFDoc_DocumentTool.ShapeTool_s(document.Main())
+    colour_tool = XCAFDoc_DocumentTool.ColorTool_s(document.Main())
     labels = TDF_LabelSequence()
     shape_tool.GetFreeShapes(labels)
     if not labels.Length():
         raise ValueError("The STEP file contains no free shapes")
 
-    return [XCAFDoc_ShapeTool.GetShape_s(labels.Value(index)) for index in range(1, labels.Length() + 1)]
+    shapes = [XCAFDoc_ShapeTool.GetShape_s(labels.Value(index)) for index in range(1, labels.Length() + 1)]
+    # Keep the document alive while meshes are generated: XDE colours are
+    # stored in this document and can differ for every solid instance.
+    return shapes, colour_tool, document
 
 
 def make_compound(shapes):
@@ -56,14 +60,31 @@ def make_compound(shapes):
     return cq.Compound.makeCompound([cq.Shape.cast(shape) for shape in shapes])
 
 
-def export_glb(shapes, target: Path, linear_tolerance: float, angular_tolerance: float) -> None:
-    """Tessellate a STEP assembly into a GLB model."""
+def export_glb(shapes, colour_tool, target: Path, linear_tolerance: float, angular_tolerance: float) -> None:
+    """Tessellate a STEP assembly into a GLB model with STEP/XDE colours."""
     import cadquery as cq
     import trimesh
     from OCP.TopAbs import TopAbs_SOLID
     from OCP.TopExp import TopExp_Explorer
+    from OCP.Quantity import Quantity_Color, Quantity_TOC_RGB
+    from OCP.XCAFDoc import XCAFDoc_ColorType
 
     scene = trimesh.Scene()
+
+    def surface_colour(solid):
+        """Resolve instance overrides before falling back to surface colours."""
+        for lookup in (colour_tool.GetInstanceColor, colour_tool.GetColor):
+            for colour_type in (
+                XCAFDoc_ColorType.XCAFDoc_ColorSurf,
+                XCAFDoc_ColorType.XCAFDoc_ColorGen,
+                XCAFDoc_ColorType.XCAFDoc_ColorCurv,
+            ):
+                colour = Quantity_Color()
+                if lookup(solid, colour_type, colour):
+                    rgb = colour.Values(Quantity_TOC_RGB)
+                    return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
+        return (179, 184, 199, 255)
+
     with tempfile.TemporaryDirectory(prefix="ue-step-glb-") as temporary:
         temporary_path = Path(temporary)
         part_number = 0
@@ -80,7 +101,7 @@ def export_glb(shapes, target: Path, linear_tolerance: float, angular_tolerance:
                 mesh = trimesh.load_mesh(mesh_path, force="mesh")
                 if not mesh.is_empty:
                     mesh.visual.material = trimesh.visual.material.PBRMaterial(
-                        baseColorFactor=(179, 184, 199, 255),
+                        baseColorFactor=surface_colour(solids.Current()),
                         metallicFactor=0.0,
                         roughnessFactor=0.72,
                     )
@@ -105,8 +126,13 @@ def export_svg(shapes, target: Path) -> None:
         str(target),
         exportType="SVG",
         opt={
+            "width": 1600,
+            "height": 1200,
+            "marginLeft": 20,
+            "marginTop": 20,
             "projectionDir": (1, -1, 1),
             "showAxes": False,
+            "strokeWidth": 1.5,
             "strokeColor": (36, 45, 57),
             "hiddenColor": (145, 153, 165),
         },
@@ -161,8 +187,8 @@ def main() -> int:
             "preview_svg": {"path": svg_path.as_posix(), "url": public_url(arguments.public_base_url, svg_path)},
         }
         try:
-            shapes = read_step_shapes(source)
-            export_glb(shapes, output / glb_path, arguments.linear_tolerance, arguments.angular_tolerance)
+            shapes, colour_tool, _document = read_step_shapes(source)
+            export_glb(shapes, colour_tool, output / glb_path, arguments.linear_tolerance, arguments.angular_tolerance)
             export_svg(shapes, output / svg_path)
             print(f"Generated GLB and SVG: {relative_source}")
         except Exception as error:
