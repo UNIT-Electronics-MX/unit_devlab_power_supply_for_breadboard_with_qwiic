@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="$lang$">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="generator" content="Pandoc">
+  <title>$title$ — $subtitle$</title>
+  $for(css)$
+  <link rel="stylesheet" href="$css$">
+  $endfor$
+</head>
+<body>
+  <section class="cover">
+    <div class="cover__brand">
+      <img src="tools/product-reference/assets/unit-logo.png" alt="UNIT Electronics">
+      <span>PRODUCT REFERENCE MANUAL</span>
+    </div>
+
+    <div class="cover__identity">
+      <p class="cover__eyebrow">MEMBER OF THE UNIT DEVLAB ECOSYSTEM</p>
+      <h1>$title$</h1>
+      <p class="cover__version">Version $version$</p>
+    </div>
+
+    <div class="cover__visual">
+      <div class="cover__halo"></div>
+      <img
+        src="hardware/resources/unit_top_v_1_0_0_ue0113_devlab_power_supply_for_breadboard_with_qwiic.png"
+        alt="Power Supply for Breadboard with Qwiic top view">
+    </div>
+
+    <div class="cover__summary">
+      <p>
+        USB-C Power Delivery sink and breadboard power-distribution module with
+        selectable VUSB rails, regulated 3.3 V output, and Qwiic I²C expansion.
+      </p>
+      <div class="cover__tags">
+        <span>USB-C PD SINK</span>
+        <span>3.3 V / 2 A</span>
+        <span>UP TO 20 V PD</span>
+        <span>QWIIC · I²C</span>
+      </div>
+    </div>
+
+    <div class="cover__footer">
+      <span>UNIT Electronics® DevLab Ecosystem</span>
+      <span>Document date $date$</span>
+    </div>
+  </section>
+
+  $if(toc)$
+  <section class="contents-page">
+    <p class="section-kicker">DOCUMENT MAP</p>
+    <h1>Contents</h1>
+    <div class="contents-page__rule"></div>
+    $toc$
+  </section>
+  $endif$
+
+  <article class="product-reference-content">
+    $body$
+  </article>
+</body>
+</html>
