@@ -82,6 +82,7 @@ jobs:
         cp "$RUNNER_TEMP/component-assets"/*.glb docs/hardware/mechanics/
         cp "$RUNNER_TEMP/component-assets"/*.svg docs/hardware/mechanics/
         cp "$RUNNER_TEMP/component-assets"/catalog.json docs/hardware/mechanics/
+        python .github/scripts/copy_hardware_docs.py --refresh-index
 
     - name: Configure GitHub Pages
       if: github.event_name != 'pull_request'

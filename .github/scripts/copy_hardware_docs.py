@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Publish hardware resources and generate a static download page."""
 
+import argparse
 import html
 import os
 import shutil
@@ -24,6 +25,7 @@ CAD_EXTENSIONS = {
     ".stl",
     ".obj",
     ".3mf",
+    ".glb",
     ".dxf",
     ".dwg",
 }
@@ -132,6 +134,7 @@ def classify_resource(name, extension):
             ".stl": ("3D Printable Model", "STL mesh model"),
             ".obj": ("3D Model", "OBJ mesh model"),
             ".3mf": ("3D Printable Model", "3MF model"),
+            ".glb": ("3D Web Model", "Interactive GLB model"),
             ".dxf": ("Mechanical Drawing", "DXF drawing"),
             ".dwg": ("Mechanical Drawing", "DWG drawing"),
         }
@@ -505,11 +508,26 @@ def generate_html_page(files):
     (DOCS_DIR / "index.html").write_text(root_page, encoding="utf-8")
 
 
-def main():
-    """Publish the hardware resources and index page."""
-    copy_hardware_files()
+def refresh_resource_index():
+    """Rebuild the documentation index from its already-published files."""
     files = scan_published_files()
     generate_html_page(files)
+    return files
+
+
+def main():
+    """Publish hardware resources, or refresh the existing documentation index."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--refresh-index",
+        action="store_true",
+        help="rebuild the docs index without copying files from hardware",
+    )
+    arguments = parser.parse_args()
+
+    if not arguments.refresh_index:
+        copy_hardware_files()
+    files = refresh_resource_index()
     print(f"Published {len(files)} hardware files to {DOCS_HARDWARE_DIR}")
     print(f"Generated {DOCS_DIR / 'index.html'}")
     print(f"Generated {DOCS_HARDWARE_DIR / 'index.html'}")
