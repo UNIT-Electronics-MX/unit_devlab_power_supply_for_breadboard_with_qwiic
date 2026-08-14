@@ -102,7 +102,7 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
                 XCAFDoc_ColorType.XCAFDoc_ColorCurv,
             ):
                 colour = Quantity_Color()
-                if lookup(solid, colour_type, colour):
+                if lookup(shape, colour_type, colour):
                     rgb = colour.Values(Quantity_TOC_RGB)
                     return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
         return fallback if fallback is not None else DEFAULT_COLOUR
