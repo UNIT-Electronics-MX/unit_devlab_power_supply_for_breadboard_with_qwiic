@@ -5,12 +5,14 @@ on:
     branches: [ main ]
     paths:
       - 'hardware/**'
+      - 'tools/cad/**'
       - 'tools/product-reference/**'
       - '.github/scripts/**'
       - '.github/workflows/copy-hardware-docs.yml'
   pull_request:
     paths:
       - 'hardware/**'
+      - 'tools/cad/**'
       - 'tools/product-reference/**'
       - '.github/scripts/**'
       - '.github/workflows/copy-hardware-docs.yml'
@@ -48,6 +50,10 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install weasyprint
 
+    - name: Install CAD conversion dependencies
+      run: |
+        python -m pip install --only-binary=:all: -r tools/cad/requirements.txt
+
     - name: Build product reference from Markdown
       run: |
         chmod +x tools/product-reference/build.sh
@@ -62,6 +68,20 @@ jobs:
       run: |
         chmod +x .github/scripts/build_docs.sh
         .github/scripts/build_docs.sh
+
+    - name: Generate CAD web assets in the documentation output
+      env:
+        MECHANICS_URL: "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/hardware/mechanics"
+      run: |
+        python tools/cad/build_step_catalog.py \
+          --input hardware/mechanics \
+          --output "$RUNNER_TEMP/component-assets" \
+          --public-base-url "$MECHANICS_URL" \
+          --require-colors
+        find docs/hardware/mechanics -maxdepth 1 -type f \( -name '*.glb' -o -name '*.svg' -o -name 'catalog.json' \) -delete
+        cp "$RUNNER_TEMP/component-assets"/*.glb docs/hardware/mechanics/
+        cp "$RUNNER_TEMP/component-assets"/*.svg docs/hardware/mechanics/
+        cp "$RUNNER_TEMP/component-assets"/catalog.json docs/hardware/mechanics/
 
     - name: Configure GitHub Pages
       if: github.event_name != 'pull_request'
