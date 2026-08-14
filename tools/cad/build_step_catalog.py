@@ -13,6 +13,7 @@ import hashlib
 import json
 import shutil
 import tempfile
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import quote
@@ -82,10 +83,16 @@ def make_compound(shapes):
 
 
 def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angular_tolerance: float) -> set:
-    """Tessellate a STEP assembly into a GLB model with STEP/XDE colours."""
+    """Tessellate a STEP assembly into a GLB model with STEP/XDE colours.
+
+    STEP assemblies commonly style individual faces instead of whole solids.
+    Exporting each solid as a single STL therefore drops those assignments and
+    makes most of an otherwise coloured PCB fall back to grey.  Grouping faces
+    by their resolved XDE colour preserves the source appearance in glTF.
+    """
     import cadquery as cq
     import trimesh
-    from OCP.TopAbs import TopAbs_SOLID
+    from OCP.TopAbs import TopAbs_FACE
     from OCP.TopExp import TopExp_Explorer
     from OCP.Quantity import Quantity_Color, Quantity_TOC_RGB
     from OCP.XCAFDoc import XCAFDoc_ColorType
@@ -107,36 +114,37 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
                     return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
         return fallback if fallback is not None else DEFAULT_COLOUR
 
+    faces_by_colour = defaultdict(list)
+    for part in parts:
+        # Colours can be attached to a component instance, a solid, or an
+        # individual face.  Resolve the broadest assignment first, then let a
+        # face-level style override it.
+        part_colour = surface_colour(part)
+        faces = TopExp_Explorer(part, TopAbs_FACE)
+        while faces.More():
+            face = faces.Current()
+            faces_by_colour[surface_colour(face, part_colour)].append(face)
+            faces.Next()
+
     with tempfile.TemporaryDirectory(prefix="ue-step-glb-") as temporary:
         temporary_path = Path(temporary)
-        part_number = 0
-        for part in parts:
-            # Colours are commonly assigned to the assembly-component instance,
-            # not to each enclosed solid. Resolve that colour first and pass it
-            # down to the solid so Qwiic headers and other coloured components
-            # retain their original STEP appearance.
-            part_colour = surface_colour(part)
-            solids = TopExp_Explorer(part, TopAbs_SOLID)
-            while solids.More():
-                mesh_path = temporary_path / f"part-{part_number}.stl"
-                cq.exporters.export(
-                    cq.Shape.cast(solids.Current()),
-                    str(mesh_path),
-                    tolerance=linear_tolerance,
-                    angularTolerance=angular_tolerance,
+        for part_number, (colour, faces) in enumerate(faces_by_colour.items()):
+            mesh_path = temporary_path / f"colour-{part_number}.stl"
+            cq.exporters.export(
+                cq.Compound.makeCompound([cq.Shape.cast(face) for face in faces]),
+                str(mesh_path),
+                tolerance=linear_tolerance,
+                angularTolerance=angular_tolerance,
+            )
+            mesh = trimesh.load_mesh(mesh_path, force="mesh")
+            if not mesh.is_empty:
+                resolved_colours.add(colour)
+                mesh.visual.material = trimesh.visual.material.PBRMaterial(
+                    baseColorFactor=colour,
+                    metallicFactor=0.0,
+                    roughnessFactor=0.72,
                 )
-                mesh = trimesh.load_mesh(mesh_path, force="mesh")
-                if not mesh.is_empty:
-                    colour = surface_colour(solids.Current(), part_colour)
-                    resolved_colours.add(colour)
-                    mesh.visual.material = trimesh.visual.material.PBRMaterial(
-                        baseColorFactor=colour,
-                        metallicFactor=0.0,
-                        roughnessFactor=0.72,
-                    )
-                    scene.add_geometry(mesh, geom_name=f"part-{part_number}")
-                part_number += 1
-                solids.Next()
+                scene.add_geometry(mesh, geom_name=f"colour-{part_number}")
 
     if not scene.geometry:
         raise ValueError("The STEP file produced no convertible solids")
