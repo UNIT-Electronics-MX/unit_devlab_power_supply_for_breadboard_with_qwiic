@@ -39,6 +39,10 @@ def read_step_model(source: Path):
     document = TDocStd_Document(TCollection_ExtendedString("ue-component-assets"))
     reader = STEPCAFControl_Reader()
     reader.SetColorMode(True)
+    # Fusion exports component appearances through the SHUO hierarchy.  It is
+    # disabled by default, which leaves the terminal block and detailed faces
+    # without their STEP presentation styles.
+    reader.SetSHUOMode(True)
     if not reader.ReadFile(str(source)) or not reader.Transfer(document):
         raise ValueError("OpenCascade could not read the STEP file")
 
@@ -92,7 +96,7 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
     """
     import cadquery as cq
     import trimesh
-    from OCP.TopAbs import TopAbs_FACE
+    from OCP.TopAbs import TopAbs_FACE, TopAbs_SOLID
     from OCP.TopExp import TopExp_Explorer
     from OCP.Quantity import Quantity_Color, Quantity_TOC_RGB
     from OCP.XCAFDoc import XCAFDoc_ColorType
@@ -120,11 +124,16 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
         # individual face.  Resolve the broadest assignment first, then let a
         # face-level style override it.
         part_colour = surface_colour(part)
-        faces = TopExp_Explorer(part, TopAbs_FACE)
-        while faces.More():
-            face = faces.Current()
-            faces_by_colour[surface_colour(face, part_colour)].append(face)
-            faces.Next()
+        solids = TopExp_Explorer(part, TopAbs_SOLID)
+        while solids.More():
+            solid = solids.Current()
+            solid_colour = surface_colour(solid, part_colour)
+            faces = TopExp_Explorer(solid, TopAbs_FACE)
+            while faces.More():
+                face = faces.Current()
+                faces_by_colour[surface_colour(face, solid_colour)].append(face)
+                faces.Next()
+            solids.Next()
 
     with tempfile.TemporaryDirectory(prefix="ue-step-glb-") as temporary:
         temporary_path = Path(temporary)
