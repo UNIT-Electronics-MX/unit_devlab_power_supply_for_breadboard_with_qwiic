@@ -54,7 +54,7 @@ def read_step_model(source: Path):
     def collect_leaf_instances(label) -> None:
         """Keep component-instance shapes; their labels carry the XDE colours."""
         components = TDF_LabelSequence()
-        if shape_tool.GetComponents(label, components):
+        if XCAFDoc_ShapeTool.GetComponents_s(label, components):
             for index in range(1, components.Length() + 1):
                 collect_leaf_instances(components.Value(index))
             return
