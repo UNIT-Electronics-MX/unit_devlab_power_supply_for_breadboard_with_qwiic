@@ -98,6 +98,7 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
     import trimesh
     from OCP.TopAbs import TopAbs_FACE, TopAbs_SOLID
     from OCP.TopExp import TopExp_Explorer
+    from OCP.TopLoc import TopLoc_Location
     from OCP.Quantity import Quantity_Color, Quantity_TOC_RGB
     from OCP.XCAFDoc import XCAFDoc_ColorType
 
@@ -105,17 +106,24 @@ def export_glb(parts, colour_tool, target: Path, linear_tolerance: float, angula
     resolved_colours = set()
 
     def surface_colour(shape, fallback=None):
-        """Resolve the XDE colour assigned to an instance or sub-shape."""
-        for lookup in (colour_tool.GetInstanceColor, colour_tool.GetColor):
-            for colour_type in (
-                XCAFDoc_ColorType.XCAFDoc_ColorSurf,
-                XCAFDoc_ColorType.XCAFDoc_ColorGen,
-                XCAFDoc_ColorType.XCAFDoc_ColorCurv,
-            ):
-                colour = Quantity_Color()
-                if lookup(shape, colour_type, colour):
-                    rgb = colour.Values(Quantity_TOC_RGB)
-                    return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
+        """Resolve the XDE colour assigned to an instance or sub-shape.
+
+        XDE indexes many STEP face styles by the unlocated source shape,
+        whereas assembly traversal yields a located instance.  Try both so
+        per-face Fusion appearances are not replaced by the default material.
+        """
+        variants = (shape, shape.Located(TopLoc_Location()))
+        for variant in variants:
+            for lookup in (colour_tool.GetInstanceColor, colour_tool.GetColor):
+                for colour_type in (
+                    XCAFDoc_ColorType.XCAFDoc_ColorSurf,
+                    XCAFDoc_ColorType.XCAFDoc_ColorGen,
+                    XCAFDoc_ColorType.XCAFDoc_ColorCurv,
+                ):
+                    colour = Quantity_Color()
+                    if lookup(variant, colour_type, colour):
+                        rgb = colour.Values(Quantity_TOC_RGB)
+                        return tuple(round(max(0, min(1, channel)) * 255) for channel in rgb) + (255,)
         return fallback if fallback is not None else DEFAULT_COLOUR
 
     faces_by_colour = defaultdict(list)
